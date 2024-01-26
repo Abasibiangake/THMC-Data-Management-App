@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "388923199102",
+    "project_id": "thmc-data-management",
+    "storage_bucket": "thmc-data-management.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388923199102:android:a9b80980b21d0312dc122f",
+        "android_client_info": {
+          "package_name": "com.example.thmcdatamanagementapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApp_X3o8Y1GAACY0TgzwlKgLKuNkqERNw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
