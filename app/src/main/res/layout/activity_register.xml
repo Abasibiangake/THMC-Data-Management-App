@@ -156,7 +156,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/RL_dob"
+                    android:id="@+id/RL_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/RL_email"
@@ -164,61 +164,61 @@
                     android:background="@color/white">
 
                     <ImageView
-                        android:id="@+id/imageViewDoB"
+                        android:id="@+id/imageViewAddress"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:src="@drawable/ic_birthday" />
+                        android:src="@drawable/ic_home" />
 
                     <TextView
-                        android:id="@+id/textView_register_dob"
+                        android:id="@+id/textView_register_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/imageViewDoB"
+                        android:layout_toEndOf="@id/imageViewAddress"
                         android:padding="6dp"
-                        android:text="Date of Birth (dd/mm/yyyy)*" />
+                        android:text="Home Address*" />
 
                     <View
-                        android:id="@+id/divider_dob"
+                        android:id="@+id/divider_address"
                         android:layout_width="250dp"
                         android:layout_height="1dp"
-                        android:layout_below="@id/textView_register_dob"
+                        android:layout_below="@id/textView_register_address"
                         android:layout_centerHorizontal="true"
                         android:background="@android:color/darker_gray" />
 
                     <EditText
-                        android:id="@+id/editText_register_dob"
-                        android:layout_width="150dp"
+                        android:id="@+id/editText_register_address"
+                        android:layout_width="250dp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/textView_register_dob"
+                        android:layout_below="@id/textView_register_address"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:layout_toEndOf="@id/imageViewDoB"
+                        android:layout_toEndOf="@id/imageViewAddress"
                         android:background="@android:color/transparent"
-                        android:hint="select your dob"
-                        android:inputType="date"
+                        android:hint="Enter your home address"
+                        android:inputType="text"
                         android:padding="6dp"
                         android:textCursorDrawable="@drawable/edittextcursor"
                         android:textSize="16sp" />
 
-                    <ImageView
-                        android:id="@+id/imageView_date_picker"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_below="@id/textView_register_dob"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_toEndOf="@id/editText_register_dob"
-                        android:src="@drawable/ic_calendar" />
+<!--                    <ImageView-->
+<!--                        android:id="@+id/imageView_date_picker"-->
+<!--                        android:layout_width="35dp"-->
+<!--                        android:layout_height="35dp"-->
+<!--                        android:layout_below="@id/textView_register_address"-->
+<!--                        android:layout_marginTop="10dp"-->
+<!--                        android:layout_marginBottom="10dp"-->
+<!--                        android:layout_toEndOf="@id/editText_register_address"-->
+<!--                        android:src="@drawable/ic_calendar" />-->
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/RL_gender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/RL_dob"
+                    android:layout_below="@id/RL_address"
                     android:layout_marginTop="10dp"
                     android:background="@color/white">
 

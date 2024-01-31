@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">THMC Data Management Application</string>
+    <string name="register">Register</string>
+    <string name="click_here_to_reset">click here to reset</string>
+    <string name="user_display_picture">user display picture</string>
+    <string name="loading">loading...</string>
+    <string name="name">name</string>
+    <string name="email">email</string>
+    <string name="address">address</string>
+    <string name="gender">Gender</string>
+    <string name="mobile">phone number</string>
+    <string name="registered_user_since">"registered user since "</string>
 </resources>

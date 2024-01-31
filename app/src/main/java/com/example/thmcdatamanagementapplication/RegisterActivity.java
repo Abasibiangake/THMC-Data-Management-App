@@ -26,12 +26,15 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 //import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText editTextRegisterFullName, editTextRegisterEmail, editTextRegisterDOB,
+    private EditText editTextRegisterFullName, editTextRegisterEmail, editTextRegisterAddress,
             editTextRegisterPhoneNo, editTextRegisterPassword, editTextRegisterConfirmPassword;
 
     private ProgressBar progressBar;
@@ -50,7 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         editTextRegisterFullName = findViewById(R.id.editText_register_full_name);
         editTextRegisterEmail = findViewById(R.id.editText_register_email);
-        editTextRegisterDOB = findViewById(R.id.editText_register_dob);
+        editTextRegisterAddress = findViewById(R.id.editText_register_address);
         editTextRegisterPhoneNo = findViewById(R.id.editText_register_mobile);
         editTextRegisterPassword = findViewById(R.id.editText_register_password);
         editTextRegisterConfirmPassword = findViewById(R.id.editText_register_confirm_password);
@@ -69,7 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
                 //obtain entered data
                 String memberFullName= editTextRegisterFullName.getText().toString();
                 String memberEmail= editTextRegisterEmail.getText().toString();
-                String memberDOB= editTextRegisterDOB.getText().toString();
+                String memberAddress= editTextRegisterAddress.getText().toString();
                 String memberPhoneNo= editTextRegisterPhoneNo.getText().toString();
                 String memberPassword= editTextRegisterPassword.getText().toString();
                 String memberConfirmPassword= editTextRegisterConfirmPassword.getText().toString();
@@ -87,10 +90,10 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Please re-enter your email", Toast.LENGTH_LONG).show();
                     editTextRegisterEmail.setError("Valid email is required");
                     editTextRegisterEmail.requestFocus();
-                }else if (TextUtils.isEmpty(memberDOB)){
-                    Toast.makeText(RegisterActivity.this, "Please enter your Date of birth", Toast.LENGTH_LONG).show();
-                    editTextRegisterDOB.setError("Date of Birth is required");
-                    editTextRegisterDOB.requestFocus();
+                }else if (TextUtils.isEmpty(memberAddress)){
+                    Toast.makeText(RegisterActivity.this, "Please enter your home address", Toast.LENGTH_LONG).show();
+                    editTextRegisterAddress.setError("Home address is required");
+                    editTextRegisterAddress.requestFocus();
                 }else if (radioGroupRegisterGender.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(RegisterActivity.this, "Please select your gender", Toast.LENGTH_LONG).show();
                     radioButtonSelectedGender.setError("Gender is required");
@@ -130,7 +133,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }else{
                     memberGender = radioButtonSelectedGender.getText().toString();
                     progressBar.setVisibility(View.VISIBLE);
-                    registerUser(memberFullName, memberEmail, memberDOB, memberGender, memberPhoneNo, memberPassword);
+                    registerUser(memberFullName, memberEmail, memberAddress, memberGender, memberPhoneNo, memberPassword);
                 }
 
 
@@ -139,35 +142,56 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private void registerUser(String memberFullName, String memberEmail, String memberDOB, String memberGender, String memberPhoneNo, String memberPassword) {
+    private void registerUser(String memberFullName, String memberEmail, String memberAddress, String memberGender, String memberPhoneNo, String memberPassword) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
+        //create member profile
         auth.createUserWithEmailAndPassword(memberEmail, memberPassword).addOnCompleteListener(RegisterActivity.this,
                 new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(RegisterActivity.this, "User registration is successful", Toast.LENGTH_LONG).show();
                             //verify email
                             FirebaseUser firebaseUser = auth.getCurrentUser();
 
+                            //extracting the user details from registered users
+                            DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered Members");
+
+                            Log.d(TAG, "Firebase UID: " + firebaseUser.getUid());
+                            //update member display name in profile
+                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(memberFullName).build();
+                            firebaseUser.updateProfile(profileChangeRequest);
+
                             //Enter User Data into Firebase Realtime Database
-                            MemberDAO memberDAO = new MemberDAO(memberFullName, memberEmail, memberGender, memberPhoneNo);
+                            MemberDAO memberDAO = new MemberDAO(firebaseUser.getUid(), memberFullName, memberAddress, memberEmail, memberGender, memberPhoneNo);
 
-                            //send verification email
-                            firebaseUser.sendEmailVerification();
+                            referenceProfile.child(memberFullName).setValue(memberDAO).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()){
+                                        //send verification email
+                                        firebaseUser.sendEmailVerification();
+                                        //display text
+                                        Toast.makeText(RegisterActivity.this, "User registration is successful. Please verify your email", Toast.LENGTH_LONG).show();
 
+                                        //open userprofile after successful registration
+                                        Intent intent = new Intent(RegisterActivity.this, UserProfileActivity.class);
+
+                                        //use flag for example when you want to either remove previous activity, for example if user
+                                        //logged out, they shouldnt be able to backspace to previous task.
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish(); //close register activity
+
+                                    }else{
+                                        //display text
+                                        Toast.makeText(RegisterActivity.this, "User registration failed. Please try again", Toast.LENGTH_LONG).show();
+                                    }
+
+                                }
+                            });
                             //remove progressbar if succesful
                             progressBar.setVisibility(View.GONE);
-                            /*
-                            //open userprofile after successful registration
-                            Intent intent = new Intent((RegisterActivity.this, UserProfileActivity.class);
 
-                            //use flag for example when you want to either remove previous activity, for example if user
-                            //logged out, they shouldnt be able to backspace to previous task.
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish(); //close register activity
-                            */
                         }else{
                             try{
                                 throw task.getException();
@@ -178,6 +202,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 editTextRegisterEmail.setError("Your email is invalid or already in use. Kindly re-enter.");
                                 editTextRegisterEmail.requestFocus();
                             }catch(FirebaseAuthUserCollisionException e){
+                                Log.e(TAG, "User is already registered with this email. Please use another email");
                                 editTextRegisterEmail.setError("User is already registered with this email. Please use another email");
                                 editTextRegisterEmail.requestFocus();
                             }catch(Exception e){
