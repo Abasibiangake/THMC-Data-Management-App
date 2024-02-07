@@ -10,4 +10,6 @@
     <string name="gender">Gender</string>
     <string name="mobile">phone number</string>
     <string name="registered_user_since">"registered user since "</string>
+    <string name="upload_pic_u">Upload Picture</string>
+    <string name="update_email_u">Update Email</string>
 </resources>

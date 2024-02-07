@@ -16,4 +16,18 @@ public class MemberDAO {
         this.memberPhoneNo = memberPhoneNo;
     }
 
+    public void setMemberAddress(String memberAddress) {
+        this.memberAddress = memberAddress;
+    }
+
+    public void setMemberGender(String memberGender) {
+        this.memberGender = memberGender;
+    }
+
+    public void setMemberPhoneNo(String memberPhoneNo) {
+        this.memberPhoneNo = memberPhoneNo;
+    }
+    public void setMemberFullName(String memberFullName) {
+        this.memberFullName = memberFullName;
+    }
 }

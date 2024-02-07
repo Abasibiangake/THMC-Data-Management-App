@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.thmcdatamanagementapplication">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,6 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.THMCDataManagementApplication"
         tools:targetApi="31">
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateEmailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateProfileActivity"
+            android:exported="false" />
         <activity
             android:name=".UploadProfilePictureActivity"
             android:exported="false" />

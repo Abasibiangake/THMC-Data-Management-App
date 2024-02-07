@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -48,6 +50,17 @@ public class UserProfileActivity extends AppCompatActivity {
         textViewPhoneNo = findViewById(R.id.textView_show_mobile);
         textViewFullName = findViewById(R.id.textView_show_full_name);
         progressBar = findViewById(R.id.progress_bar);
+
+        //set onclicklistener on the profile image to open the uploadProfilePictureActivity
+        imageView = findViewById(R.id.imageView_profile_dp);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserProfileActivity.this, UploadProfilePictureActivity.class);
+                startActivity(intent); // dont use finish so after upload it returns to the user profile page.
+
+            }
+        });
 
         authProfile = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = authProfile.getCurrentUser();
@@ -98,7 +111,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void showUserProfile(FirebaseUser firebaseUser) {
 //        String userID = firebaseUser.getUid();
-        String userID = firebaseUser.getDisplayName();
+        String userID = firebaseUser.getUid();
 
         //extract each user reference from database under registered members db
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered Members");
@@ -126,9 +139,17 @@ public class UserProfileActivity extends AppCompatActivity {
                     textViewGender.setText(gender);
                     textViewPhoneNo.setText(phoneNo);
 
+                    //set profile pic
+                    Uri uri = firebaseUser.getPhotoUrl();
+
+                    //get from external source- firebase so use picasso
+                    Picasso.with(UserProfileActivity.this).load(uri).into(imageView);
+
                 }
                 else{
                     Log.e(TAG, "ERROR");
+                    Toast.makeText(UserProfileActivity.this, "Something is wrong. ", Toast.LENGTH_LONG).show();
+
                 }
 
 
@@ -166,25 +187,31 @@ public class UserProfileActivity extends AppCompatActivity {
             //remove animation and directly refresh
             overridePendingTransition(0, 0);
         }
-//        else if (id == R.id.menu_update_profile){
-//            Intent intent = new Intent(UserProfileActivity.this, UpdateProfileActivity);
-//            startActivity(intent);
-//        }
-//        else if (id == R.id.menu_update_email){
-//            Intent intent = new Intent(UserProfileActivity.this, UpdateEmailActivity);
-//            startActivity(intent);
-//        }
+        else if (id == R.id.menu_update_profile){
+            Intent intent = new Intent(UserProfileActivity.this, UpdateProfileActivity.class);
+            startActivity(intent);
+        }
+        else if (id == R.id.menu_update_email){
+            Intent intent = new Intent(UserProfileActivity.this, UpdateEmailActivity.class);
+            startActivity(intent);
+            finish();
+        }
 ////        else if (id == R.id.menu_setting){
-////            Intent intent = new Intent(UserProfileActivity.this, SettingActivity);
+////            Intent intent = new Intent(UserProfileActivity.this, SettingActivity.class);
 ////        startActivity(intent);
+        //          finish();
+
 ////        }
-//        else if (id == R.id.menu_change_password){
-////            Intent intent = new Intent(UserProfileActivity.this, ChangePasswordActivity);
-////            startActivity(intent);
-//        }
+        else if (id == R.id.menu_change_password){
+            Intent intent = new Intent(UserProfileActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
+            finish();
+        }
 //        else if (id == R.id.menu_delete_profile){
-//            Intent intent = new Intent(UserProfileActivity.this, DeleteProfileActivity);
+//            Intent intent = new Intent(UserProfileActivity.this, DeleteProfileActivity.class);
 //            startActivity(intent);
+        //          finish();
+
 //        }
         else if (id == R.id.menu_logout){
             authProfile.signOut();

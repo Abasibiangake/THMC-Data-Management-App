@@ -30,6 +30,9 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 //import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -78,6 +81,12 @@ public class RegisterActivity extends AppCompatActivity {
                 String memberConfirmPassword= editTextRegisterConfirmPassword.getText().toString();
                 String memberGender;
 
+                //validate mobile number using matcher and pattern
+                String mobileRegex = "[4-9][0-9]{9}";
+                Matcher mobilematcher;
+                Pattern mobilePattern = Pattern.compile(mobileRegex);
+                mobilematcher = mobilePattern.matcher(memberPhoneNo);
+
                 if (TextUtils.isEmpty(memberFullName)){
                     Toast.makeText(RegisterActivity.this, "Please enter your full name", Toast.LENGTH_LONG).show();
                     editTextRegisterFullName.setError("Full Name cannot be empty");
@@ -105,6 +114,10 @@ public class RegisterActivity extends AppCompatActivity {
                 }else if (memberPhoneNo.length() != 10){
                     Toast.makeText(RegisterActivity.this, "Please re-enter your phone number", Toast.LENGTH_LONG).show();
                     editTextRegisterPhoneNo.setError("Phone Number should be 10 digits");
+                    editTextRegisterPhoneNo.requestFocus();
+                }else if(!mobilematcher.find()){
+                    Toast.makeText(RegisterActivity.this, "Please re-enter your phone number", Toast.LENGTH_LONG).show();
+                    editTextRegisterPhoneNo.setError("Phone Numberis not valid");
                     editTextRegisterPhoneNo.requestFocus();
                 }
                 else if (TextUtils.isEmpty(memberPassword)){
@@ -164,7 +177,7 @@ public class RegisterActivity extends AppCompatActivity {
                             //Enter User Data into Firebase Realtime Database
                             MemberDAO memberDAO = new MemberDAO(firebaseUser.getUid(), memberFullName, memberAddress, memberEmail, memberGender, memberPhoneNo);
 
-                            referenceProfile.child(memberFullName).setValue(memberDAO).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            referenceProfile.child(firebaseUser.getUid()).setValue(memberDAO).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()){
