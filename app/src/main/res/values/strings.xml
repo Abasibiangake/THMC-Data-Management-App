@@ -12,4 +12,7 @@
     <string name="registered_user_since">"registered user since "</string>
     <string name="upload_pic_u">Upload Picture</string>
     <string name="update_email_u">Update Email</string>
+    <string name="welcome_head_profile">Welcome %1$s!</string>
+    <string name="exclamation">!</string>
+
 </resources>

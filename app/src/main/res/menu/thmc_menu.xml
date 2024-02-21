@@ -5,9 +5,10 @@
     <item android:title="Refresh"
         android:id="@+id/menu_refresh"
         android:icon="@drawable/ic_refresh_white"
-        android:alphabeticShortcut="r"
-        android:orderInCategory="1"
-        app:showAsAction="ifRoom"/>
+        android:alphabeticShortcut="r"/>
+<!--        android:orderInCategory="1"-->
+<!--        app:showAsAction="ifRoom"-->
+
     <item android:title="Update Profile"
         android:id="@+id/menu_update_profile"/>
     <item android:title="Update Email"

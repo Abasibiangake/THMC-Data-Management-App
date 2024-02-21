@@ -283,12 +283,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-//        else if (id == R.id.menu_delete_profile){
-//            Intent intent = new Intent(UploadProfilePictureActivity.this, DeleteProfileActivity.class);
-//            startActivity(intent);
-        //          finish();
+        else if (id == R.id.menu_delete_profile){
+            Intent intent = new Intent(UpdateProfileActivity.this, DeleteProfileActivity.class);
+            startActivity(intent);
+            finish();
 
-//        }
+        }
         else if (id == R.id.menu_logout){
             authProfile.signOut();
             Toast.makeText(UpdateProfileActivity.this, "Logged Out", Toast.LENGTH_LONG).show();

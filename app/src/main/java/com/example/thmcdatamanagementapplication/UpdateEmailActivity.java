@@ -205,12 +205,12 @@ public class UpdateEmailActivity extends AppCompatActivity {
             finish();
 
         }
-//        else if (id == R.id.menu_delete_profile){
-//            Intent intent = new Intent(UpdateEmailActivity.this, DeleteProfileActivity.class);
-//            startActivity(intent);
-        //          finish();
+        else if (id == R.id.menu_delete_profile){
+            Intent intent = new Intent(UpdateEmailActivity.this, DeleteProfileActivity.class);
+            startActivity(intent);
+            finish();
 
-//        }
+        }
         else if (id == R.id.menu_logout){
             authProfile.signOut();
             Toast.makeText(UpdateEmailActivity.this, "Logged Out", Toast.LENGTH_LONG).show();

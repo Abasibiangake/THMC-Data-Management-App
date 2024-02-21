@@ -16,6 +16,9 @@
         android:theme="@style/Theme.THMCDataManagementApplication"
         tools:targetApi="31">
         <activity
+            android:name=".DeleteProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChangePasswordActivity"
             android:exported="false" />
         <activity

@@ -84,7 +84,7 @@ public class UploadProfilePictureActivity extends AppCompatActivity {
     private void UploadPic() {
         if (uriImage != null){
             //save the image to logged user
-            StorageReference fileReference = storageReference.child(authProfile.getCurrentUser().getDisplayName()+"."+
+            StorageReference fileReference = storageReference.child(authProfile.getCurrentUser().getUid()+"/displaypic."+
                     getFileExtension(uriImage));
 
             //upload image to storage. Putfile is used to upload
@@ -191,12 +191,11 @@ public class UploadProfilePictureActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-//        else if (id == R.id.menu_delete_profile){
-//            Intent intent = new Intent(UploadProfilePictureActivity.this, DeleteProfileActivity.class);
-//            startActivity(intent);
-        //          finish();
-
-//        }
+        else if (id == R.id.menu_delete_profile){
+            Intent intent = new Intent(UploadProfilePictureActivity.this, DeleteProfileActivity.class);
+            startActivity(intent);
+            finish();
+        }
         else if (id == R.id.menu_logout){
             authProfile.signOut();
             Toast.makeText(UploadProfilePictureActivity.this, "Logged Out", Toast.LENGTH_LONG).show();

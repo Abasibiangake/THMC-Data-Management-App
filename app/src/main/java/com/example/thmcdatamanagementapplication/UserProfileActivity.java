@@ -1,10 +1,5 @@
 package com.example.thmcdatamanagementapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +12,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.Objects;
+
 public class UserProfileActivity extends AppCompatActivity {
 
     private TextView textViewWelcome, textViewFullName, textViewAddress, textViewEmail,
@@ -34,6 +36,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private String fullName, email, address, gender, phoneNo;
     private ImageView imageView;
     private FirebaseAuth authProfile;
+    private SwipeRefreshLayout swipeContainer;
     private static final String TAG= "UserProfileActivity";
 
 
@@ -42,7 +45,10 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        getSupportActionBar().setTitle("Home");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Home");
+
+        swipeToRefresh();
+
         textViewWelcome = findViewById(R.id.textView_show_welcome);
         textViewAddress = findViewById(R.id.textView_show_address);
         textViewEmail = findViewById(R.id.textView_show_email);
@@ -53,13 +59,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
         //set onclicklistener on the profile image to open the uploadProfilePictureActivity
         imageView = findViewById(R.id.imageView_profile_dp);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(UserProfileActivity.this, UploadProfilePictureActivity.class);
-                startActivity(intent); // dont use finish so after upload it returns to the user profile page.
+        imageView.setOnClickListener(v -> {
+            Intent intent = new Intent(UserProfileActivity.this, UploadProfilePictureActivity.class);
+            startActivity(intent); // dont use finish so after upload it returns to the user profile page.
 
-            }
         });
 
         authProfile = FirebaseAuth.getInstance();
@@ -79,6 +82,23 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
+    private void swipeToRefresh() {
+        //look for container
+        swipeContainer = findViewById(R.id.swipeContainer);
+
+        //setup refresh listerner
+        swipeContainer.setOnRefreshListener(() -> {
+            startActivity(getIntent());
+            finish();
+            overridePendingTransition(0,0);
+            swipeContainer.setRefreshing(false);
+        });
+
+        //config refresh
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,android.R.color.holo_orange_light,android.R.color.holo_red_light);
+    }
+
     private void checkEmailVerified(FirebaseUser firebaseUser) {
         if (!firebaseUser.isEmailVerified()){
             showAlertDialog();
@@ -93,14 +113,11 @@ public class UserProfileActivity extends AppCompatActivity {
         builder.setMessage("Please verify your email to proceed to login!");
 
         //open email
-        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // launches email as a separate app and not in the thmc app.
-                startActivity(intent);
-            }
+        builder.setPositiveButton("Continue", (dialog, which) -> {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // launches email as a separate app and not in the thmc app.
+            startActivity(intent);
         });
         //create
         AlertDialog alertDialog = builder.create();
@@ -132,7 +149,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     phoneNo = memberDAO.memberPhoneNo;
                     gender = memberDAO.memberGender;
 
-                    textViewWelcome.setText("Welcome "+ fullName+ "!");
+                    textViewWelcome.setText(getString(R.string.welcome_head_profile, fullName));
                     textViewFullName.setText(fullName);
                     textViewEmail.setText(email);
                     textViewAddress.setText(address);
@@ -207,12 +224,12 @@ public class UserProfileActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-//        else if (id == R.id.menu_delete_profile){
-//            Intent intent = new Intent(UserProfileActivity.this, DeleteProfileActivity.class);
-//            startActivity(intent);
-        //          finish();
+        else if (id == R.id.menu_delete_profile){
+            Intent intent = new Intent(UserProfileActivity.this, DeleteProfileActivity.class);
+            startActivity(intent);
+                  finish();
 
-//        }
+        }
         else if (id == R.id.menu_logout){
             authProfile.signOut();
             Toast.makeText(UserProfileActivity.this, "Logged Out", Toast.LENGTH_LONG).show();
